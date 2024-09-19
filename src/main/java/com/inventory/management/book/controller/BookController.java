@@ -1,24 +1,29 @@
 package com.inventory.management.book.controller;
 
+import com.inventory.management.book.constants.CSVHeaderConstants;
 import com.inventory.management.book.entity.Book;
 import com.inventory.management.book.mapper.BookMapper;
 import com.inventory.management.book.request.BookSearchCriteria;
 import com.inventory.management.book.request.CreateBookRequest;
-import com.inventory.management.book.request.PagingRequest;
 import com.inventory.management.book.response.BookDto;
-import com.inventory.management.book.response.CsvOutputResponse;
+import com.inventory.management.book.response.PageDto;
 import com.inventory.management.book.service.BookService;
+import com.inventory.management.book.util.DateUtil;
+import com.inventory.management.book.util.PaginationUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.ByteArrayInputStream;
+import org.springframework.data.domain.Page;
 import java.io.IOException;
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
 @RestController
 public class BookController {
@@ -33,23 +38,42 @@ public class BookController {
     }
 
     @GetMapping("/books")
-    public List<BookDto> getBooks(BookSearchCriteria bookSearchCriteria, PagingRequest pagingRequest) {
-        List<Book> bookList = bookService.getBooksByCriteria(bookSearchCriteria, pagingRequest);
-        return BookMapper.INSTANCE.toDtoList(bookList);
+    public PageDto<BookDto> getBooks(BookSearchCriteria bookSearchCriteria,
+        @RequestParam(required = false) final Integer pageNo,
+        @RequestParam(required = false) final Integer pageSize,
+        @RequestParam(required = false) final String[] sort
+
+    ) {
+        Page<Book> bookPages = null;
+        if (pageNo != null && pageSize != null) {
+            bookPages = bookService.getBooksByCriteria(bookSearchCriteria, PaginationUtil.getPageable(pageNo, pageSize, sort));
+        } else {
+            List<Book> books = sort != null ?bookService.getBooksByCriteria(bookSearchCriteria, PaginationUtil.getSort(sort)): bookService.getBooksByCriteria(bookSearchCriteria);
+            bookPages = BookMapper.INSTANCE.toPage(books, sort);
+        }
+        return BookMapper.INSTANCE.toPagedDto(bookPages);
     }
 
-    @GetMapping(value = "/books/export", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<byte[]> exportToCsv(BookSearchCriteria bookSearchCriteria) throws IOException {
-        CsvOutputResponse csvOutputResponse = bookService.getBooksInCsvByCriteria(bookSearchCriteria);
+    @GetMapping(value = "/books/export")
+    public void exportToCsv(BookSearchCriteria bookSearchCriteria, HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        String currentDateTime = DateUtil.getCurrentLocalDateTimeAsString();
 
-        // Set up the response headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+csvOutputResponse.getFileName());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=books_" + currentDateTime + ".csv";
+        response.setHeader(headerKey, headerValue);
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
-        // Return the response entity
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(csvOutputResponse.getCsvByteArray());
+        String[] csvHeader = {CSVHeaderConstants.ENTRY_ID, CSVHeaderConstants.TITLE, CSVHeaderConstants.AUTHOR,CSVHeaderConstants.GENRE,CSVHeaderConstants.PUBLICATION_DATE,CSVHeaderConstants.ISBN};
+        String[] nameMapping = {"entryId", "title", "author", "genre", "publicationDate","isbn"};
+        List<Book> bookList = bookService.getBooksByCriteria(bookSearchCriteria);
+
+        csvWriter.writeHeader(csvHeader);
+        for (Book book : bookList) {
+            csvWriter.write(book, nameMapping);
+        }
+
+        csvWriter.close();
     }
 
 }
