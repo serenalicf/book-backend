@@ -1,7 +1,7 @@
 package com.inventory.management.book.controller;
 
-import com.inventory.management.book.constants.CSVHeaderConstants;
 import com.inventory.management.book.entity.Book;
+import com.inventory.management.book.enums.CSVHeaderFieldMapping;
 import com.inventory.management.book.mapper.BookMapper;
 import com.inventory.management.book.request.BookSearchCriteria;
 import com.inventory.management.book.request.CreateBookRequest;
@@ -58,8 +58,8 @@ public class BookController {
         response.setHeader(headerKey, headerValue);
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
-        String[] csvHeader = {CSVHeaderConstants.ENTRY_ID, CSVHeaderConstants.TITLE, CSVHeaderConstants.AUTHOR,CSVHeaderConstants.GENRE,CSVHeaderConstants.PUBLICATION_DATE,CSVHeaderConstants.ISBN};
-        String[] nameMapping = {"entryId", "title", "author", "genre", "publicationDate","isbn"};
+        String[] csvHeader = {CSVHeaderFieldMapping.ENTRY_ID.getHeaderName(), CSVHeaderFieldMapping.TITLE.getHeaderName(), CSVHeaderFieldMapping.AUTHOR.getHeaderName(),CSVHeaderFieldMapping.GENRE.getHeaderName(),CSVHeaderFieldMapping.PUBLICATION_DATE.getHeaderName(),CSVHeaderFieldMapping.ISBN.getHeaderName()};
+        String[] nameMapping = {CSVHeaderFieldMapping.ENTRY_ID.getFieldName(), CSVHeaderFieldMapping.TITLE.getFieldName(), CSVHeaderFieldMapping.AUTHOR.getFieldName(),CSVHeaderFieldMapping.GENRE.getFieldName(),CSVHeaderFieldMapping.PUBLICATION_DATE.getFieldName(),CSVHeaderFieldMapping.ISBN.getFieldName()};
         List<Book> bookList = bookService.getBooksByCriteria(bookSearchCriteria);
 
         csvWriter.writeHeader(csvHeader);
