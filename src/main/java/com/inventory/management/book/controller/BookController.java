@@ -39,18 +39,12 @@ public class BookController {
 
     @GetMapping("/books")
     public PageDto<BookDto> getBooks(BookSearchCriteria bookSearchCriteria,
-        @RequestParam(required = false) final Integer pageNo,
-        @RequestParam(required = false) final Integer pageSize,
-        @RequestParam(required = false) final String[] sort
+        @RequestParam(required = false,defaultValue = "0") final Integer pageNo,
+        @RequestParam(required = false,defaultValue = "10") final Integer pageSize,
+        @RequestParam(required = false,defaultValue = "entryId,asc") final String[] sort
 
     ) {
-        Page<Book> bookPages = null;
-        if (pageNo != null && pageSize != null) {
-            bookPages = bookService.getBooksByCriteria(bookSearchCriteria, PaginationUtil.getPageable(pageNo, pageSize, sort));
-        } else {
-            List<Book> books = sort != null ?bookService.getBooksByCriteria(bookSearchCriteria, PaginationUtil.getSort(sort)): bookService.getBooksByCriteria(bookSearchCriteria);
-            bookPages = BookMapper.INSTANCE.toPage(books, sort);
-        }
+        Page<Book> bookPages = bookService.getBooksByCriteria(bookSearchCriteria, PaginationUtil.getPageable(pageNo, pageSize, sort));
         return BookMapper.INSTANCE.toPagedDto(bookPages);
     }
 

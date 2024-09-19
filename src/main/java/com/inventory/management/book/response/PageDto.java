@@ -19,4 +19,6 @@ public class PageDto<T> {
 
   private long totalElements;
 
+  private int currentPageNo;
+
 }

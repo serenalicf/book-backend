@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -55,12 +54,6 @@ public class BookServiceImpl implements BookService{
     public List<Book> getBooksByCriteria(BookSearchCriteria bookSearchCriteria) {
         return bookRepository.findAll(buildSpecification(bookSearchCriteria));
     }
-
-    @Override
-    public List<Book> getBooksByCriteria(BookSearchCriteria bookSearchCriteria, Sort sort) {
-        return bookRepository.findAll(buildSpecification(bookSearchCriteria),sort);
-    }
-
     private Specification<Book> buildSpecification(BookSearchCriteria bookSearchCriteria){
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicateList = new ArrayList<>();

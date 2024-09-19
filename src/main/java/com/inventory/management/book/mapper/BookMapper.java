@@ -5,7 +5,6 @@ import com.inventory.management.book.request.CreateBookRequest;
 import com.inventory.management.book.response.BookDto;
 import com.inventory.management.book.response.PageDto;
 import com.inventory.management.book.util.DateUtil;
-import com.inventory.management.book.util.PaginationUtil;
 import java.util.ArrayList;
 import java.util.Optional;
 import org.mapstruct.Mapper;
@@ -14,7 +13,6 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 @Mapper
@@ -50,12 +48,21 @@ public interface BookMapper {
             .collect(Collectors.toList());
         return PageDto.<BookDto>builder()
             .content(bookDtos)
-            .totalPages(bookPage.getTotalPages())
-            .totalElements(bookPage.getTotalElements())
+            .totalPages(
+                Optional.ofNullable(bookPage)
+                        .map(Page::getTotalPages)
+                    .orElse(0)
+            )
+            .totalElements(
+                Optional.ofNullable(bookPage)
+                    .map(Page::getTotalElements)
+                    .orElse(0L)
+            )
+            .currentPageNo(Optional.ofNullable(bookPage)
+                .map(Page::getPageable)
+                .map(Pageable::getPageNumber)
+                .orElse(0)
+            )
             .build();
-    }
-    default Page<Book> toPage(List<Book> books, String[] sort){
-        Pageable pageable = PaginationUtil.getPageable(0,books.size(),sort);
-        return new PageImpl<>(books, pageable, books.size());
     }
 }
