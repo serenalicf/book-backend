@@ -1,0 +1,9 @@
+--DROP TABLE IF EXISTS inventory;
+--CREATE TABLE inventory (
+--    entry_id INT AUTO_INCREMENT PRIMARY KEY,
+--    title VARCHAR(255) NOT NULL,
+--    author VARCHAR(255) NOT NULL,
+--    genre VARCHAR(255) NOT NULL,
+--    publication_date DATE NOT NULL,
+--    isbn VARCHAR(20) UNIQUE NOT NULL
+--)
