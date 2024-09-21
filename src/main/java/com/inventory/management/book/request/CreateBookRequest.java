@@ -22,7 +22,7 @@ public class CreateBookRequest {
     @NotBlank(message = "The book ISBN must be provided.")
     @Pattern(
             regexp = "^([0-9]{10}|[0-9]{13})$",
-            message = "The ISBN format must be valid."
+            message = "The ISBN must be either 10 digits or 13 digits."
     )
     private String isbn;
 
