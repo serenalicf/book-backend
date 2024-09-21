@@ -56,6 +56,7 @@ public class BookController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=books_" + currentDateTime + ".csv";
         response.setHeader(headerKey, headerValue);
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
         String[] csvHeader = {CSVHeaderFieldMapping.ENTRY_ID.getHeaderName(), CSVHeaderFieldMapping.TITLE.getHeaderName(), CSVHeaderFieldMapping.AUTHOR.getHeaderName(),CSVHeaderFieldMapping.GENRE.getHeaderName(),CSVHeaderFieldMapping.PUBLICATION_DATE.getHeaderName(),CSVHeaderFieldMapping.ISBN.getHeaderName()};
