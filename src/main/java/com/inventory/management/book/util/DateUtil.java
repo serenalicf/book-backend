@@ -1,18 +1,20 @@
 package com.inventory.management.book.util;
 
 import com.inventory.management.book.exception.InvalidDateFormatException;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class DateUtil {
-    public static LocalDate convertStringToLocalDate(String dateString){
+    public static LocalDate convertStringToLocalDate(String field,String dateString){
         try {
              return LocalDate.parse(dateString);
         } catch (Exception ex){
-            throw new InvalidDateFormatException(dateString);
+            log.error(ex.getMessage(),ex);
+            throw new InvalidDateFormatException(field,dateString);
         }
     }
 

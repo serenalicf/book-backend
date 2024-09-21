@@ -1,5 +1,10 @@
 package com.inventory.management.book.exception;
 
+import com.inventory.management.book.response.ErrorDTO;
+import com.inventory.management.book.response.ErrorListDTO;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -16,32 +21,57 @@ public class BookExceptionHandler {
 
     @ExceptionHandler(BookAlreadyExistException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public String hanldeBookExistException(BookAlreadyExistException bEx){
-        return bEx.getMessage();
+    public ErrorListDTO hanldeBookExistException(BookAlreadyExistException bEx){
+        ErrorDTO errorDTO = ErrorDTO.builder()
+            .errorMessage(bEx.getMessage())
+            .build();
+
+        return ErrorListDTO.builder()
+            .errors(Collections.singletonList(errorDTO))
+            .build();
     }
 
     @ExceptionHandler(CreateBookException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleCreateBookException(CreateBookException cEx){
-        return cEx.getMessage();
+    public ErrorListDTO handleCreateBookException(CreateBookException cEx){
+        ErrorDTO errorDTO = ErrorDTO.builder()
+            .errorMessage(cEx.getMessage())
+            .build();
+
+        return ErrorListDTO.builder()
+            .errors(Collections.singletonList(errorDTO))
+            .build();
     }
 
     @ExceptionHandler(InvalidDateFormatException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleInvalidDateFormatException(InvalidDateFormatException iEx){
-        return iEx.getMessage();
+    public ErrorListDTO handleInvalidDateFormatException(InvalidDateFormatException iEx){
+        ErrorDTO errorDTO = ErrorDTO.builder()
+            .errorMessage(iEx.getMessage())
+            .fieldName(iEx.getField())
+            .build();
+
+        return ErrorListDTO.builder()
+            .errors(Collections.singletonList(errorDTO))
+            .build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationException(MethodArgumentNotValidException mEx){
-        Map<String, String> errorMap = new HashMap<>();
+    public ErrorListDTO handleValidationException(MethodArgumentNotValidException mEx){
+        List<ErrorDTO> errorList = new ArrayList<>();
 
         for(ObjectError err : mEx.getBindingResult().getAllErrors()){
             String field = ((FieldError) err).getField();
             String errorMessage = err.getDefaultMessage();
-            errorMap.put(field, errorMessage);
+            errorList.add(ErrorDTO.builder()
+                    .fieldName(field)
+                    .errorMessage(errorMessage)
+                .build()
+            );
         }
-        return errorMap;
+        return ErrorListDTO.builder()
+            .errors(errorList)
+            .build();
     }
 }

@@ -35,7 +35,7 @@ public interface BookMapper {
                 .title(createBookRequest.getTitle())
                 .genre(createBookRequest.getGenre())
                 .isbn(createBookRequest.getIsbn())
-                .publicationDate(DateUtil.convertStringToLocalDate(createBookRequest.getPublicationDate()))
+                .publicationDate(DateUtil.convertStringToLocalDate("publicationDate",createBookRequest.getPublicationDate()))
                 .build();
     }
 
