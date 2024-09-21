@@ -58,11 +58,6 @@ public interface BookMapper {
                     .map(Page::getTotalElements)
                     .orElse(0L)
             )
-            .currentPageNo(Optional.ofNullable(bookPage)
-                .map(Page::getPageable)
-                .map(Pageable::getPageNumber)
-                .orElse(0)
-            )
             .build();
     }
 }

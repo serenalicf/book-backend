@@ -5,6 +5,7 @@ import com.inventory.management.book.response.ErrorListDTO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -14,8 +15,21 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@Slf4j
 public class BookExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorListDTO hanldeGeneralException(Exception ex){
+        log.error(ex.getMessage(),ex);
+        ErrorDTO errorDTO = ErrorDTO.builder()
+            .errorMessage("System Busy. Please try again later !")
+            .build();
+
+        return ErrorListDTO.builder()
+            .errors(Collections.singletonList(errorDTO))
+            .build();
+    }
     @ExceptionHandler(BookAlreadyExistException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ErrorListDTO hanldeBookExistException(BookAlreadyExistException bEx){
