@@ -80,12 +80,12 @@ public class BookServiceImpl implements BookService{
 
             if(StringUtils.isNotBlank(bookSearchCriteria.getFromPublicationDate())){
                 predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("publicationDate"),
-                        DateUtil.convertStringToLocalDate("publicationDate",bookSearchCriteria.getFromPublicationDate())));
+                        DateUtil.convertStringToLocalDate(bookSearchCriteria.getFromPublicationDate(),"yyyy-MM-dd")));
             }
 
             if(StringUtils.isNotBlank(bookSearchCriteria.getToPublicationDate())){
                 predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get("publicationDate"),
-                        DateUtil.convertStringToLocalDate("publicationDate",bookSearchCriteria.getToPublicationDate())));
+                        DateUtil.convertStringToLocalDate(bookSearchCriteria.getFromPublicationDate(),"yyyy-MM-dd")));
 
             }
 

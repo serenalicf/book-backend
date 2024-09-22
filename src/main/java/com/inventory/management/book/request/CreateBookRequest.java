@@ -1,6 +1,7 @@
 package com.inventory.management.book.request;
 
 
+import com.inventory.management.book.validation.DateFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -17,6 +18,7 @@ public class CreateBookRequest {
     private String genre;
 
     @NotBlank(message = "The book publication date must be provided.")
+    @DateFormat
     private String publicationDate;
 
     @NotBlank(message = "The book ISBN must be provided.")

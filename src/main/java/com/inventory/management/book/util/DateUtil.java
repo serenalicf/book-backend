@@ -1,7 +1,5 @@
 package com.inventory.management.book.util;
 
-import com.inventory.management.book.exception.InvalidDateFormatException;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,15 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DateUtil {
-    public static LocalDate convertStringToLocalDate(String field,String dateString){
+    public static LocalDate convertStringToLocalDate(String dateString,String pattern){
         try {
-             return LocalDate.parse(dateString);
+            return LocalDate.parse(dateString,DateTimeFormatter.ofPattern(pattern));
         } catch (Exception ex){
             log.error(ex.getMessage(),ex);
-            throw new InvalidDateFormatException(field,dateString);
+            throw ex;
         }
     }
-
     public static String convertLocalDateToString(LocalDate date){
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }

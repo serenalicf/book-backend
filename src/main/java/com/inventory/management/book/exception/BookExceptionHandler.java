@@ -53,20 +53,6 @@ public class BookExceptionHandler {
             .errors(Collections.singletonList(errorDTO))
             .build();
     }
-
-    @ExceptionHandler(InvalidDateFormatException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorListDTO handleInvalidDateFormatException(InvalidDateFormatException iEx){
-        ErrorDTO errorDTO = ErrorDTO.builder()
-            .errorMessage(iEx.getMessage())
-            .fieldName(iEx.getField())
-            .build();
-
-        return ErrorListDTO.builder()
-            .errors(Collections.singletonList(errorDTO))
-            .build();
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorListDTO handleValidationException(MethodArgumentNotValidException mEx){
