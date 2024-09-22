@@ -14,7 +14,7 @@ VALUES ('Cloud Native Spring in Action','Thomas Vitale','Technology, Computer Sc
     ('Design Patterns: Elements of Reusable Object-Oriented Software','Erich Gamma','Software Development','1994-01-01','0201633612'),
     ('Computer Networking: A Top-Down Approach','James Kurose','Information Technology','2016-04-26','9780133594140'),
     ('Spring Security in Action','Laurentiu Spilca','Technology, Computer Science, and Programming','2024-05-14',' 9781633437975'),
-    ('Spring Boot in Action','Craig Walls','Technology, Computer Science, and Programming','2015-12-16',' 9781617292545')
+    ('Spring Boot in Action','Craig Walls','Technology, Computer Science, and Programming','2015-12-16',' 9781617292545'),
     ('Harry Potter and the Sorcerer''s Stone', 'J.K. Rowling', 'Fantasy', '1997-06-26', '9780590353427'),
 ('Harry Potter and the Chamber of Secrets', 'J.K. Rowling', 'Fantasy', '1998-07-02', '9780439064866'),
 ('Harry Potter and the Prisoner of Azkaban', 'J.K. Rowling', 'Fantasy', '1999-09-08', '9780439136365'),
